@@ -47,20 +47,24 @@ setColors(containerColor1, colorHead1)
 btn.innerHTML = "Hit me!" 
 btn.setAttribute('class', 'button')
 
-inputField.setAttribute("type", "text");
-inputField.setAttribute("value", "Hello World!");
+inputField.setAttribute("type", "text")
+inputField.setAttribute("value", "Hello World!")
+inputField.setAttribute("id", "myAnswer")
 
 
 let initialUrl = "https://api.noopschallenge.com"
-let myUrl = initialUrl //"https://api.noopschallenge.com"
+let myUrl = "" //"https://api.noopschallenge.com"
 let Rubrik = ""
 let nextQuestion = ""
 let firstTime = true
 
 
-//function setUrl(url){
-//  myUrl = "https://api.noopschallenge.com"+url
-//}
+function setUrl(url){
+  myUrl = initialUrl+url
+  console.log("setUrl: "+myUrl)
+  return myUrl
+}
+setUrl("/fizzbot")
 
 
 function setTexts(heading, content){
@@ -73,19 +77,21 @@ function setColors(containerColor, h1Color){
 }
 
 function initialFizz(){
-  myUrl += "/fizzbot"
-  //console.log(myUrl)
-  
   fetch(myUrl)
   .then(function(response) {
       return response.json();
   })
-  .then(function(myJson) {
-  
-  setTexts("Welcome stranger!", myJson.message)
-  myUrl = initialUrl + myJson.nextQuestion
+  .then(function(myJson) {  
+    setTexts("Welcome stranger!", myJson.message)
+    //console.log("myJson: "+JSON.stringify(myJson))
+    
+    if(firstTime){
+      setUrl(myJson.nextQuestion)
+      //console.log("efter: "+myUrl)
+      //console.log("myJson.nextQuestion: "+myJson.nextQuestion)
+    }
+    card.appendChild(inputField)
   })
-  firstTime = false
 }
 
 //  postData('http://example.com/answer', {answer: 42})
@@ -111,22 +117,31 @@ function postData(url = '', data = {}) {
 }
 
 function setStuff(myResult, myMessage, nextQuestion){
-setTexts(myResult, myMessage)
-setColors(containerColor2, colorHead2)
-myUrl = initialUrl + nextQuestion
+  setTexts(myResult, myMessage)
+  setColors(containerColor2, colorHead2)
+  setUrl(nextQuestion)
+  console.log("setStuff: "+myUrl)
 }
 
 function pressedBtn() {
-console.log("Firsttime: "+firstTime)
+  //console.log(firstTime)
   if(firstTime){
+    //console.log("Min Url är: "+myUrl)
     initialFizz()
+    firstTime = false
+    //card.appendChild(inputField)
   } else {
-    postData(myUrl, {answer: inputField})
+    postData(myUrl, {answer: document.getElementById("myAnswer").value})
+    // Jobba här: Bara ändra urlen om man har svarat korrekt, så att länken finns kvar att prova igen på -------> 
     .then(data => setStuff(data.result, data.message, data.nextQuestion)) // JSON-string from `response.json()` call
     .catch(error => console.error(error))
   }
   /*
   {"result":"correct","message":"Of course. How interesting. Are you ready for your first REAL question?","nextQuestion":"/fizzbot/questions/bWxOgBqSA0dkSP7ElkazujaKdwdDx2uWDgQV-f9Q0MQ"}
+
+  {"message":"FizzBuzz is the name of the game.\nHere's a list of numbers.\nSend me back a string as follows:\nFor each number:\nIf it is divisible by 3, print \"Fizz\".\nIf it is divisible by 5, print \"Buzz\".\nIf it is divisible by 3 and 5, print \"FizzBuzz\".\nOtherwise, print the number.\n\nEach entry in the string should be separated by a space.\n\nFor example, if the numbers are [1, 2, 3, 4, 5], you would send back:\n\n{\n  \"answer\": \"1 2 Fizz 4 Buzz\"\n}\n","rules":[{"number":3,"response":"Fizz"},{"number":5,"response":"Buzz"}],"numbers":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"exampleResponse":{"answer":"1 2 Fizz 4 Buzz..."}}
+
+
   */
 }
 
@@ -136,5 +151,6 @@ btn.addEventListener("click", pressedBtn);
 container.appendChild(card)
 card.appendChild(h1)
 card.appendChild(p)
-card.appendChild(inputField)
+card.appendChild(inputField) 
 card.appendChild(btn)
+
