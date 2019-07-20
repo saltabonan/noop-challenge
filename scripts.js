@@ -203,7 +203,7 @@ function setTexts(response){
       exampleDiv.appendChild(exampleNodeH2)
       exampleDiv.appendChild(exampleNodeP)
       extraDiv.appendChild(exampleDiv)
-    } 
+    }
 
     if(response.rules){
       
@@ -228,23 +228,70 @@ function setTexts(response){
       numbersDiv.setAttribute('id', 'numbersDiv')
 
       numbersNodeH2.textContent = "Numbers:"
-      //let myNumbers = JSON.stringify(response.numbers)
+
+      // --------
+      // räkna ut vilka regler som gäller, och hur alla nummer ska fördelas och räknas
+
+      let myRules = response.rules
+      let myRulesLength = myRules.length
       let myNumbers = response.numbers
-      console.log("+ myNumbers är : " + myNumbers)
-      
       let myNumbersLength = myNumbers.length
+      let temp
+      let stringToPlaceInInputfield = ""
+
+      // for (i = 0; i < myRulesLength; i++) { 
+      //   console.log("myRules, nummer: " + myRules[i].number + " och response: " + myRules[i].response)
+      //}
       
+      
+      //Loop genom alla nummer för att kolla om reglerna kan appliceras
       for (index = 0; index < myNumbersLength; index++) { 
+        let checkNumber
+        temp = myNumbers[index]
+        let myRule
+        let lastRule
+        
+        console.log("myNumbers[index]: " + myNumbers[index])
+
+        // ----
+        // Adding the numbers in a readable matter on the site
         if(index == myNumbersLength-1){
-        //  console.log("Sista numret: " + myNumbers[index])
           numbersNodeP.textContent += myNumbers[index]
         } else {
-        //  console.log("Mitt nummer: " + myNumbers[index])
           numbersNodeP.textContent += myNumbers[index] + ", "
         }
+        // ----
+
+        // Loop genom alla regler
+        for (i = 0; i < myRulesLength; i++) { 
+          myRule = myRules[i].response
+          checkNumber = (myNumbers[index]/myRules[i].number)
+
+          // ----
+          // Calculate the fizzbuzz-matter
+          if (checkNumber == Math.floor(checkNumber)) {
+            // divisible with itself
+            console.log("Regel : "+ myRule)
+            
+            if(lastRule){
+              temp += myRule
+              console.log("if lastRule : "+ lastRule)
+            } else {
+              temp = myRule
+              console.log("else lastRule : "+ lastRule)
+            }
+            lastRule = myRule
+          }
+          
+        }
+        stringToPlaceInInputfield += temp + " "
+        console.log("")
       }
-      
-      
+      // trim the whitespace at the end of the string
+      let newStr = stringToPlaceInInputfield.replace(/(^\s+|\s+$)/g,'')
+      document.getElementById("myInput").value = newStr
+
+      // --------
       
       numbersDiv.appendChild(numbersNodeH2)
       numbersDiv.appendChild(numbersNodeP)
@@ -256,7 +303,6 @@ function setTexts(response){
       container.removeChild(getBtn)
       container.appendChild(postBtn)
       container.insertBefore(myInput, postBtn)
-      document.getElementById("myInput").value = ''
     }
 
   //-------------------------
@@ -285,6 +331,24 @@ function setTexts(response){
       container.appendChild(getBtn)
       getBtn.innerText = 'Get: YES'
       getBtn.addEventListener("click", getNextQuestionBtn)
+
+  //-------------------------
+  // SVAR: Congrats! You are all done!
+
+      } else if (response.result == "interview complete") {
+        
+        firstTime = true
+        h1.innerText = "CONGRATULATIONS!\n"
+        h2.innerText = myResult
+        p.innerText = "You are a noop!"
+        container.removeChild(extraDiv)
+        container.removeChild(myInput)
+        container.removeChild(postBtn)
+        container.appendChild(getBtn)
+
+        setUrl("/fizzbot")
+        getBtn.innerText = 'Start all over again'
+        getBtn.addEventListener("click", myInit)
 
   //-------------------------
   // SVAR: FEL...
