@@ -17,9 +17,9 @@ container.setAttribute('class', 'section')
 footer.setAttribute('id', 'footer')
 
 getBtn.setAttribute('id', 'getBtn')
-getBtn.innerText = 'Get: me going!'
+getBtn.innerText = 'Get me going!'
 postBtn.setAttribute('id', 'postBtn')
-postBtn.innerText = 'Post: Get me going!'
+postBtn.innerText = 'Post me going!'
 
 myInput.setAttribute('class', 'input')
 myInput.setAttribute('id', 'myInput')
@@ -30,15 +30,11 @@ let firstTime = true
 let myHeading = ""
 let myBody = ""
 
-//----------------
-// KÖR IGÅNG ALLT
-//----------------
-
 // ---------------------------------
-//Funktion för att hämta från API
+// Fetching from API
 //
 function fetchingWithGET(myUrl) {
-  console.log("+++ fetchingWithGET")
+  //console.log("+++ fetchingWithGET")
   fetch(myUrl)
   .then(function(response) {
       return response.json()
@@ -50,11 +46,10 @@ function fetchingWithGET(myUrl) {
   })
 }
 // -----------------------------------------------------------
-//Funktion för att skicka/posta till API och få tillbaka svar
+// Sending/posting to API
 //
 function fetchingWithPOST(url = '', data = {}) {
-  console.log("--- fetchingWithPOST")
-  
+  ///console.log("--- fetchingWithPOST")
   return fetch(url, {
     method: 'POST', // or 'PUT'
     body: JSON.stringify(data), // data can be `string` or {object}!
@@ -66,43 +61,27 @@ function fetchingWithPOST(url = '', data = {}) {
   .catch(error => console.error('Error:', error))
 }
 
-// ---------------------------------
-// BUTTONS - funktion som kan ropas på från knapparna för att skicka svar eller hämta nästa fråga
+// ------------------------------------------
+// BUTTONS - functions for call from buttons
 // 
-function removingChilds(){
-  // var children = app.childNodes;
-  // children.forEach(function(item){
-  //   console.log(item);
-  // })
-
-  console.log("--- Removing!")
-  // if(container.hasChildNodes()){
-  //   container.removeChild(exampleDiv)
-  // }
-  app.removeChild(navbar)
-  app.removeChild(container)
-  app.removeChild(footer)
-}
-
-function removeElement(elementId) {
-    // Removes an element from the document
-    let element = document.getElementById(elementId)
-    element.parentNode.removeChild(element)
-}
-
 function postAnswerBtn() {
   fetchingWithPOST(myUrl, {answer: document.getElementById("myInput").value})
-  //removingChilds()
 }
 function getNextQuestionBtn() {
-  //removingChilds()
   fetchingWithGET(myUrl)
 }
 
 // ---------------------------------
-// Funktion för att köra igång allt
-//
+
 function myInit(){
+
+  if(firstTime == false){
+    app.removeChild(navbar)
+    app.removeChild(container)
+    app.removeChild(footer)
+
+    firstTime = true
+  }
   fetchingWithGET(myUrl)
 }
 
@@ -110,18 +89,22 @@ function myInit(){
 // 
 
 function showNextQuestion(){
-  //fetchingWithGET(myUrl, "Från showNextQuestion och genom fetchingWithGET...")
-  postBtn.innerText = 'Post: Send my awesome answer!'
+  postBtn.innerText = 'Send my awesome answer!'
+  postBtn.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      alert('Enter!')
+      postAnswerBtn()
+    }
+  })
   postBtn.addEventListener("click", postAnswerBtn)
   
   container.insertBefore(myInput, getBtn)
 }
 
 function setTexts(response){
-  //console.log("+ setTexts: "+ JSON.stringify(response))
-
-//----------
-  // NY FRÅGA
+  //-----------------
+  // NEW QUESTION
 
   if(!response.result){
     let myMessage = response.message
@@ -157,41 +140,37 @@ function setTexts(response){
     
     for (let key in response) {
       if (response.hasOwnProperty(key)) {
-        console.log(key + " -> " + response[key])
-        /*
-        let h2 = document.createElement('h2')
-        let p = document.createElement('p')
-        myHeading = shiftadHeading
-        myBody =  response.message.substring(lengthOfHeading + 1, response.message.length)
-        h1.textContent = myHeading
-        //p.textContent = myBody
-        h2.textContent = key
-        p.textContent = response[key]
-        
-        container.appendChild(h2)
-        container.appendChild(p)*/
+        //console.log(key + " -> " + response[key])
       }
     }
 
     if(!firstTime){
-      postBtn.innerText = 'Post: Send my awesome answer!'
+      postBtn.innerText = 'Send my awesome answer!'
+      postBtn.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+         event.preventDefault()
+         alert('Enter!')
+         postAnswerBtn()
+        }
+      })
       postBtn.addEventListener("click", postAnswerBtn)
+      
       container.insertBefore(myInput, getBtn)
     }
   
-  
+    getBtn.addEventListener("keyup", function(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault()
+        alert('Enter!')
+        getNextQuestionBtn()
+      }
+    })
     getBtn.addEventListener("click", getNextQuestionBtn)
 
     let extraDiv = document.createElement("div")
     extraDiv.setAttribute('id', 'extraDiv')
 
     if(response.exampleResponse){
-      console.log("Ett exempel! ")
-      // if(document.getElementById("exampleDiv")){
-      //   console.log("tar bort exampleDiv...")
-      //   container.removeChild(exampleDiv)
-      // }
-      
       let exampleDiv = document.createElement("div")
       let exampleNodeH2 = document.createElement("h2")
       let exampleNodeP = document.createElement("p")
@@ -229,8 +208,8 @@ function setTexts(response){
 
       numbersNodeH2.textContent = "Numbers:"
 
-      // --------
-      // räkna ut vilka regler som gäller, och hur alla nummer ska fördelas och räknas
+      // ---------------------------------------------------------------
+      // calculate which rules apply and how the numbers will be added
 
       let myRules = response.rules
       let myRulesLength = myRules.length
@@ -238,21 +217,14 @@ function setTexts(response){
       let myNumbersLength = myNumbers.length
       let temp
       let stringToPlaceInInputfield = ""
-
-      // for (i = 0; i < myRulesLength; i++) { 
-      //   console.log("myRules, nummer: " + myRules[i].number + " och response: " + myRules[i].response)
-      //}
       
-      
-      //Loop genom alla nummer för att kolla om reglerna kan appliceras
+      // Loop for all numbers and check if the rules apply
       for (index = 0; index < myNumbersLength; index++) { 
         let checkNumber
         temp = myNumbers[index]
         let myRule
         let lastRule
         
-        console.log("myNumbers[index]: " + myNumbers[index])
-
         // ----
         // Adding the numbers in a readable matter on the site
         if(index == myNumbersLength-1){
@@ -262,7 +234,7 @@ function setTexts(response){
         }
         // ----
 
-        // Loop genom alla regler
+        // Loop through rules
         for (i = 0; i < myRulesLength; i++) { 
           myRule = myRules[i].response
           checkNumber = (myNumbers[index]/myRules[i].number)
@@ -270,15 +242,11 @@ function setTexts(response){
           // ----
           // Calculate the fizzbuzz-matter
           if (checkNumber == Math.floor(checkNumber)) {
-            // divisible with itself
-            console.log("Regel : "+ myRule)
-            
+            // divisible with itself            
             if(lastRule){
               temp += myRule
-              console.log("if lastRule : "+ lastRule)
             } else {
               temp = myRule
-              console.log("else lastRule : "+ lastRule)
             }
             lastRule = myRule
           }
@@ -306,19 +274,13 @@ function setTexts(response){
     }
 
   //-------------------------
-  // SVAR: RÄTT!
+  // Answer: Right!
   
   } else if(response.result){
-    console.log("response.result : " + response.result)
-    
-    //removeElement(document.getElementById("extraDiv"))
-    
     let myResult = response.result.charAt(0).toUpperCase() + response.result.slice(1)
     let myMessage = response.message
     
     if(response.result == "correct"){
-      console.log("Mitt svar var rätt")
-      
       myHeading = myResult
       myBody = myMessage
       h1.textContent = myHeading
@@ -329,33 +291,46 @@ function setTexts(response){
       container.removeChild(myInput)
       container.removeChild(postBtn)
       container.appendChild(getBtn)
-      getBtn.innerText = 'Get: YES'
+      getBtn.innerText = 'YES'
+      getBtn.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault()
+          alert('Enter!')
+          getNextQuestionBtn()
+        }
+      })
       getBtn.addEventListener("click", getNextQuestionBtn)
+      
 
-  //-------------------------
-  // SVAR: Congrats! You are all done!
+  //--------------------------------------
+  // Answer: Congrats! You are all done!
 
       } else if (response.result == "interview complete") {
         
-        firstTime = true
         h1.innerText = "CONGRATULATIONS!\n"
         h2.innerText = myResult
         p.innerText = "You are a noop!"
         container.removeChild(extraDiv)
         container.removeChild(myInput)
         container.removeChild(postBtn)
+        
         container.appendChild(getBtn)
 
         setUrl("/fizzbot")
         getBtn.innerText = 'Start all over again'
+        getBtn.addEventListener("keyup", function(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault()
+            alert('Enter!')
+            myInit()
+          }
+        })
         getBtn.addEventListener("click", myInit)
 
   //-------------------------
-  // SVAR: FEL...
+  // Answer: Wrong...
 
     } else {
-      console.log("Åh, nej....")
-
       h1.innerText = myResult
       h2.innerText = "Lets try again, shall we?\n" + myHeading
       p.innerText = myBody
@@ -363,13 +338,20 @@ function setTexts(response){
       container.appendChild(postBtn)
       
       container.insertBefore(myInput, postBtn)
-      postBtn.innerText = 'Post: Hit me!'
+      postBtn.innerText = 'Hit me!'
+      postBtn.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault()
+          alert('Enter!')
+          postAnswerBtn()
+        }
+      })
       postBtn.addEventListener("click", postAnswerBtn)
     }
   }
 
 //------------------------------------------------
-// SÄTT URL så att den blir rätt till nästa fråga
+// Set URL to make it right for the next question
 //
   if(response.nextQuestion){
     setUrl(response.nextQuestion)
@@ -385,5 +367,11 @@ function setUrl(url){
   }
 }
 
+//--------------------------
+// Starting up everything:
+//--------------------------
 setUrl("/fizzbot")
 myInit()
+
+//--------------------------
+//--------------------------
