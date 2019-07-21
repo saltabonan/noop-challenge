@@ -1,3 +1,6 @@
+
+console.log("Welcome! :D")
+
 //-----------
 // VARIABLES
 //-----------
@@ -12,13 +15,12 @@ const myInput = document.createElement('input')
 const getBtn = document.createElement('BUTTON')
 const postBtn = document.createElement('BUTTON')
 
-navbar.setAttribute('class', 'section')
 container.setAttribute('class', 'section')
 footer.setAttribute('id', 'footer')
 
 getBtn.setAttribute('id', 'getBtn')
-getBtn.innerText = 'Get me going!'
 postBtn.setAttribute('id', 'postBtn')
+postBtn.setAttribute('class', 'greenBtn')
 postBtn.innerText = 'Post me going!'
 
 myInput.setAttribute('class', 'input')
@@ -29,6 +31,28 @@ let myUrl = ""
 let firstTime = true
 let myHeading = ""
 let myBody = ""
+
+function navigationBar(){
+  const ul = document.createElement('ul')
+  const li1 = document.createElement('li')
+  const li2 = document.createElement('li')
+  const link1 = document.createElement('a')
+  const link2 = document.createElement('a')
+
+  ul.setAttribute('class', 'ul')
+  link1.innerText = "FizzBuzz"
+  link1.href = 'index.html'
+  link2.innerText = "Nina"
+  link2.href = 'index.html'
+
+  li1.appendChild(link1)
+  li2.appendChild(link2)
+  ul.appendChild(li1)
+  ul.appendChild(li2)
+  navbar.appendChild(ul)
+}
+
+navigationBar()
 
 // ---------------------------------
 // Fetching from API
@@ -64,6 +88,8 @@ function fetchingWithPOST(url = '', data = {}) {
 // ---------------------------------
 
 function myInit(){
+  getBtn.setAttribute('class', 'greenBtn')
+  getBtn.innerText = 'Get me going!'
   setUrl("/fizzbot")
   fetchingWithGET(myUrl)
   setEventlistenerGet()
@@ -215,6 +241,7 @@ function setTexts(response){
       container.removeChild(extraDiv)
       container.removeChild(myInput)
       container.removeChild(postBtn)
+      getBtn.setAttribute('class', 'greenBtn')
       container.appendChild(getBtn)
       getBtn.innerText = 'YES, I want the next question!'
 
@@ -231,7 +258,7 @@ function setTexts(response){
     container.removeChild(extraDiv)
     container.removeChild(myInput)
     container.removeChild(postBtn)
-    
+    getBtn.setAttribute('class', 'yellowBtn')
     container.appendChild(getBtn)
 
     setUrl("/fizzbot")

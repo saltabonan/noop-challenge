@@ -86,8 +86,7 @@ p {
 
 header {
   background-color: #9dd6ed;
-  /*height: 50px;
-  padding: 10px;*/
+  height: 47px;
 }
 .correct{
   color: #4dac39;
@@ -110,6 +109,7 @@ header {
   padding: 15px;
   margin-right: auto;
   margin-left: auto;
+  width:600px;
   /*height:100px;*/
   text-align: center;
 }
@@ -125,9 +125,10 @@ header {
   background-color: #988570;
   height: 50px;
   bottom:0px;
+  margin-top:20px;
 }
 #getBtn, #postBtn{
-  background-color: #6fc95e;
+  /*background-color: #6fc95e;*/
   margin: auto;
   border-radius: 20px;
   padding: 8px 17px;
@@ -152,6 +153,12 @@ header {
   user-select: none;
   background-image: none;
 }
+.greenBtn{
+  background-color: #6fc95e;
+}
+.yellowBtn{
+  background-color: #ffcc00;
+}
 .input{
   width: 80%;
   font-size: 16px;
@@ -170,3 +177,35 @@ header {
   padding-top: 12px;
   padding-bottom: 12px;
 }
+ul {
+  list-style-type: none;
+  margin: 0;
+  margin-right: 0px;
+  padding: 0;
+  overflow: hidden;
+  float: right;
+  /*background-color: #333;*/
+}
+
+li {
+  float: right;
+}
+
+li a {
+  display: block;
+  color: white;
+  /*text-align: center;*/
+  padding: 14px 16px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 100;
+  font-size: 16px;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  text-decoration: bold;
+  color: white;
+  background-color: #28a6d7;
+}
+
