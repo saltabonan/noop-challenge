@@ -32,6 +32,55 @@ let firstTime = true
 let myHeading = ""
 let myBody = ""
 
+
+//-----------------------
+// I AM A WOBOOT"
+function iAmARobot(){
+  const myOwnBotBtn = document.createElement('BUTTON')
+  myOwnBotBtn.setAttribute('id', 'myOwnBotBtn')
+  myOwnBotBtn.setAttribute('class', 'pinkBtn')
+  myOwnBotBtn.innerText = "I\'m a robot!"
+  container.appendChild(myOwnBotBtn)
+  myOwnBotBtn.addEventListener("click", myRobotFunction)
+}
+
+iAmARobot()
+
+// async function fn() {
+//   return 'hello';
+// }
+// fn().then(console.log)
+// // hello
+
+function myRobotFunction(){
+  console.log("I am a wooobooooot!!")
+  let myFirst = true
+  let mySecond = true
+  let myTime = 0
+  let myTimeset = 400
+
+  for(i = 0; i < 14; i++){    
+    if(myFirst){
+      setTimeout(fetchingWithGET(myUrl), myTime)
+      console.log("1" + myTime)
+      myFirst = false
+    } else if (mySecond){
+      myTime += myTimeset
+      setTimeout(postAnswerBtn, myTime)
+      console.log("2" + myTime)
+      mySecond = false
+    } else {
+      myTime += myTimeset
+      setTimeout(getNextQuestionBtn, myTime)
+      console.log("3" + myTime)
+      mySecond = true
+    }
+  }
+}
+//-----------------------
+
+//-----------------------
+// Navigation bar
 function navigationBar(){
   const ul = document.createElement('ul')
   const li1 = document.createElement('li')
@@ -42,17 +91,19 @@ function navigationBar(){
   ul.setAttribute('class', 'ul')
   link1.innerText = "FizzBuzz"
   link1.href = 'index.html'
-  link2.innerText = "Nina"
+  link2.innerText = "Om fina Nina"
   link2.href = 'index.html'
 
   li1.appendChild(link1)
   li2.appendChild(link2)
-  ul.appendChild(li1)
   ul.appendChild(li2)
+  ul.appendChild(li1)
   navbar.appendChild(ul)
 }
 
 navigationBar()
+//-----------------------
+
 
 // ---------------------------------
 // Fetching from API

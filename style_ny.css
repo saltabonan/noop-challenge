@@ -127,7 +127,7 @@ header {
   bottom:0px;
   margin-top:20px;
 }
-#getBtn, #postBtn{
+#getBtn, #postBtn, #myOwnBotBtn{
   /*background-color: #6fc95e;*/
   margin: auto;
   border-radius: 20px;
@@ -158,6 +158,9 @@ header {
 }
 .yellowBtn{
   background-color: #ffcc00;
+}
+.pinkBtn{
+  background-color: #e600ac;
 }
 .input{
   width: 80%;
