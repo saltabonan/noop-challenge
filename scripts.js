@@ -132,31 +132,7 @@ function setEventlistALLOVERagain(){
   getBtn.addEventListener("click", myInit)
 }
 
-//-----------------
-// 
-//-----------------
-function setTexts(response){
-  //-----------------
-  // NEW QUESTION
-
-  for (let key in response) {
-    if (response.hasOwnProperty(key)) {
-      console.log(key + " -> " + response[key])
-    }
-  }
-
-  // If no result, then it is a new question:
-  if(!response.result){
-    // Split the message and set the first line as H2, and the rest of message in body
-    let myMessage = response.message
-    let res = response.message.split("\n")
-    let shiftadHeading = res.shift()
-    let lengthOfHeading = shiftadHeading.length
-
-    container.appendChild(h1)
-    myHeading = shiftadHeading
-    myBody =  response.message.substring(lengthOfHeading + 1, response.message.length)
-    
+function appendNewQuestion(response){
     // Sets text H1 and the rest of the texts
     if(firstTime){
       h1.textContent = "Welcome stranger!" 
@@ -181,9 +157,57 @@ function setTexts(response){
 
 
     if(!firstTime){
+      console.log("if(!firstTime){, innan knappen awesome answer")
       postBtn.innerText = 'Send my awesome answer!'
       container.insertBefore(myInput, getBtn)
     }
+
+}
+
+//-----------------
+// SETS TEXTS
+//-----------------
+function setTexts(response){
+  //-----------------
+  // NEW QUESTION
+
+  // logs the result coming back to me
+  for (let key in response) {
+    if (response.hasOwnProperty(key)) {
+      console.log(key + " -> " + response[key])
+    }
+  }
+/*
+  for (let key in response) {
+    if (response.hasOwnProperty(key)) {
+      console.log(key + " -> " + response[key])
+      
+      let h2 = document.createElement('h2')
+      let p = document.createElement('p')
+      myHeading = shiftadHeading
+      myBody =  response.message.substring(lengthOfHeading + 1, response.message.length)
+      h1.textContent = myHeading
+      //p.textContent = myBody
+      h2.textContent = key
+      p.textContent = response[key]
+      
+      container.appendChild(h2)
+      container.appendChild(p)
+    }
+  }
+*/
+  // If no result, then it is a NEW question:
+  if(!response.result){
+    // Split the message and set the first line as H2, and the rest of message in body
+    let myMessage = response.message
+    let res = response.message.split("\n")
+    let shiftadHeading = res.shift()
+    let lengthOfHeading = shiftadHeading.length
+
+    myHeading = shiftadHeading
+    myBody =  response.message.substring(lengthOfHeading + 1, response.message.length)
+    
+    appendNewQuestion(response)
 
     // --------------------------------
     // If new question and the message contains example of how to respond, then show:
@@ -227,57 +251,19 @@ function setTexts(response){
       numbersDiv.setAttribute('id', 'numbersDiv')
 
       numbersNodeH2.textContent = "Numbers:"
-
-      // ---------------------------------------------------------------
-      // calculate which rules apply and how the numbers will be added
-
-      let myRules = response.rules
-      let myRulesLength = myRules.length
       let myNumbers = response.numbers
-      let myNumbersLength = myNumbers.length
-      let temp
-      let stringToPlaceInInputfield = ""
       
-      // Loop for all numbers and check if the rules apply
-      for (index = 0; index < myNumbersLength; index++) { 
-        let checkNumber
-        temp = myNumbers[index]
-        let myRule
-        let lastRule
-        
+      for (index = 0; index < myNumbers.length; index++) { 
         // ----
         // Adding the numbers in a readable matter on the site
-        if(index == myNumbersLength-1){
+        if(index == myNumbers.length-1){
           numbersNodeP.textContent += myNumbers[index]
         } else {
           numbersNodeP.textContent += myNumbers[index] + ", "
         }
         // ----
-
-        // Loop through rules
-        for (i = 0; i < myRulesLength; i++) { 
-          myRule = myRules[i].response
-          checkNumber = (myNumbers[index]/myRules[i].number)
-
-          // ----
-          // Calculate the fizzbuzz-matter
-          if (checkNumber == Math.floor(checkNumber)) {
-            // divisible with itself            
-            if(lastRule){
-              temp += myRule
-            } else {
-              temp = myRule
-            }
-            lastRule = myRule
-          }
-          
-        }
-        stringToPlaceInInputfield += temp + " "
       }
-      // trim the whitespace at the end of the string
-      let newStr = stringToPlaceInInputfield.replace(/(^\s+|\s+$)/g,'')
-      document.getElementById("myInput").value = newStr
-
+      document.getElementById("myInput").value = calculateNumbers(response)
       // --------
       
       numbersDiv.appendChild(numbersNodeH2)
@@ -287,42 +273,45 @@ function setTexts(response){
       // --------------------------------
     } 
 
-    // If new question and not first time:
+    // If new question ???  and not first time:
     if(!firstTime){
-      console.log("- If new question and not first time:, kanske all over again?")
+      console.log("If new question ???  and not first time:")
       container.appendChild(extraDiv)
       container.removeChild(getBtn)
       container.appendChild(postBtn)
       container.insertBefore(myInput, postBtn)
     }
 
-  //-------------------------
-  // Answer: Right!
+    //-------------------------
+    // RESULT!
+    // Answer: Right!
   
-  } else if(response.result){
-    // Sets result with Uppercase
-    let myResult = response.result.charAt(0).toUpperCase() + response.result.slice(1)
-    let myMessage = response.message
-    
-    if(response.result == "correct"){
-      myHeading = myResult
-      myBody = myMessage
-      h1.textContent = myHeading
-      container.removeChild(h2)
-      p.innerText = myBody
+    } else if(response.result){
+      
+      // Sets result with Uppercase
+      let myResult = setUppercase(response.result) 
+      let myMessage = response.message
+      
+      if(response.result == "correct"){
+        myHeading = myResult
+        myBody = myMessage
+        h1.textContent = myHeading
+        container.removeChild(h2)
+        p.innerText = myBody
 
-      container.removeChild(extraDiv)
-      container.removeChild(myInput)
-      container.removeChild(postBtn)
-      container.appendChild(getBtn)
-      getBtn.innerText = 'YES, I want the next question!'
+        container.removeChild(extraDiv)
+        container.removeChild(myInput)
+        container.removeChild(postBtn)
+        container.appendChild(getBtn)
+        getBtn.innerText = 'YES, I want the next question!'
 
-  //--------------------------------------
-  // Answer: CONGRATS! You are all done!
+    //--------------------------------------
+    // Answer: CONGRATS! You are all done!
 
     } else if (response.result == "interview complete") {
-
-      let myResult = response.result.charAt(0).toUpperCase() + response.result.slice(1)
+      
+      // Sets result with Uppercase
+      let myResult = setUppercase(response.result)
       h1.innerText = myResult
       h2.innerText = "Grade: " + response.grade
       p.innerText = response.message
@@ -336,8 +325,8 @@ function setTexts(response){
       getBtn.innerText = 'Start me all over again'
       setEventlistALLOVERagain()
 
-  //-------------------------
-  // Answer: Wrong...
+    //-------------------------
+    // Answer: Wrong...
 
     } else {
       h1.innerText = myResult
@@ -359,6 +348,51 @@ function setTexts(response){
   }
 
   firstTime = false
+}
+
+function calculateNumbers(response){
+  let myRules = response.rules
+  let myRulesLength = myRules.length
+  let myNumbers = response.numbers
+  let myNumbersLength = myNumbers.length
+  let temp
+  let stringToPlaceInInputfield = ""
+  
+  // Loop for all numbers and check if the rules apply
+  for (index = 0; index < myNumbersLength; index++) { 
+    let checkNumber
+    temp = myNumbers[index]
+    let myRule
+    let lastRule
+
+    // Loop through rules
+    for (i = 0; i < myRulesLength; i++) { 
+      myRule = myRules[i].response
+      checkNumber = (myNumbers[index]/myRules[i].number)
+      // ----
+      // Calculate the fizzbuzz-matter
+      if (checkNumber == Math.floor(checkNumber)) {
+        // divisible with itself            
+        if(lastRule){
+          temp += myRule
+        } else {
+          temp = myRule
+        }
+        lastRule = myRule
+      }
+    }
+    stringToPlaceInInputfield += temp + " "
+  }
+  // trim the whitespace at the end of the string
+  let newStr = stringToPlaceInInputfield.replace(/(^\s+|\s+$)/g,'')
+  //document.getElementById("myInput").value = newStr
+  return newStr
+
+}
+
+function setUppercase(result){
+  let myUpper = result.charAt(0).toUpperCase() + result.slice(1)
+  return myUpper
 }
 
 function setUrl(url){
