@@ -192,7 +192,7 @@ function setTexts(response){
   // NEW QUESTION
   // If no result, then it is a new question
   if(!response.result){
-
+    h1.setAttribute('class', 'standard')
     appendNewQuestion(response)
 
   //-------------------------
@@ -207,6 +207,7 @@ function setTexts(response){
     if(response.result == "correct"){
       myHeading = myResult
       myBody = myMessage
+      h1.setAttribute('class', 'correct')
       h1.textContent = myHeading
       container.removeChild(h2)
       p.innerText = myBody
@@ -223,6 +224,7 @@ function setTexts(response){
   } else if (response.result == "interview complete") {
     // Sets result with Uppercase
     let myResult = setUppercase(response.result)
+    h1.setAttribute('class', 'complete')
     h1.innerText = myResult
     h2.innerText = "Grade: " + response.grade
     p.innerText = response.message
@@ -240,6 +242,7 @@ function setTexts(response){
   // Answer: Wrong...
   //
   } else {
+    h1.setAttribute('class', 'wrong')
     h1.innerText = myResult
     h2.innerText = "Lets try again, shall we?\n" + myHeading
     p.innerText = myBody

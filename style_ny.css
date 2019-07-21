@@ -89,6 +89,18 @@ header {
   /*height: 50px;
   padding: 10px;*/
 }
+.correct{
+  color: #4dac39;
+}
+.standard{
+  color: #333;
+}
+.wrong{
+  color: #cc0000;
+}
+.complete{
+  color: #2495c2;
+}
 
 #root{
   display:block;
