@@ -40,7 +40,7 @@ h4 {
 h1 {
     font-size: 42px;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 h2 {
@@ -73,6 +73,7 @@ a:hover {
 p {
     font-size: 16px;
     line-height: 1.8em;
+    margin-bottom: 30px;
 }
 
 .margin-bottom {
@@ -94,7 +95,7 @@ header {
 }
 
 .section{
-  padding: 25px;
+  padding: 15px;
   margin-right: auto;
   margin-left: auto;
   /*height:100px;*/

@@ -61,6 +61,17 @@ function fetchingWithPOST(url = '', data = {}) {
   .catch(error => console.error('Error:', error))
 }
 
+// ---------------------------------
+// My init function
+// ---------------------------------
+
+function myInit(){
+  setUrl("/fizzbot")
+  fetchingWithGET(myUrl)
+  setEventlistenerGet()
+  setEventlistenerPost()
+}
+
 // ------------------------------------------
 // BUTTONS - functions for call from buttons
 // 
@@ -72,24 +83,23 @@ function getNextQuestionBtn() {
 }
 
 // ---------------------------------
+// EVENT listeners
 
-function myInit(){
-
-  if(firstTime == false){
-    app.removeChild(navbar)
-    app.removeChild(container)
-    app.removeChild(footer)
-
-    firstTime = true
+function setEventlistenerGet(){
+  if (firstTime != true){
+    console.log("Jag kommer från att ha klarat allt")
   }
-  fetchingWithGET(myUrl)
+  getBtn.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      alert('Enter!')
+      getNextQuestionBtn()
+    }
+  })
+  getBtn.addEventListener("click", getNextQuestionBtn)
 }
 
-// ---------------------------------
-// 
-
-function showNextQuestion(){
-  postBtn.innerText = 'Send my awesome answer!'
+function setEventlistenerPost(){
   postBtn.addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
       event.preventDefault()
@@ -98,15 +108,46 @@ function showNextQuestion(){
     }
   })
   postBtn.addEventListener("click", postAnswerBtn)
-  
-  container.insertBefore(myInput, getBtn)
 }
 
+function setEventlistALLOVERagain(){
+  getBtn.removeEventListener("click", getNextQuestionBtn)
+  getBtn.removeEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      alert('Enter!')
+      myInit()
+    }
+  })
+
+  console.log("Tagit bort getBtn event listener, och sätter nu ny.")
+  
+  getBtn.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      alert('Enter!')
+      myInit()
+    }
+  })
+  getBtn.addEventListener("click", myInit)
+}
+
+//-----------------
+// 
+//-----------------
 function setTexts(response){
   //-----------------
   // NEW QUESTION
 
+  for (let key in response) {
+    if (response.hasOwnProperty(key)) {
+      console.log(key + " -> " + response[key])
+    }
+  }
+
+  // If no result, then it is a new question:
   if(!response.result){
+    // Split the message and set the first line as H2, and the rest of message in body
     let myMessage = response.message
     let res = response.message.split("\n")
     let shiftadHeading = res.shift()
@@ -116,6 +157,7 @@ function setTexts(response){
     myHeading = shiftadHeading
     myBody =  response.message.substring(lengthOfHeading + 1, response.message.length)
     
+    // Sets text H1 and the rest of the texts
     if(firstTime){
       h1.textContent = "Welcome stranger!" 
       h2.textContent = myHeading
@@ -137,36 +179,14 @@ function setTexts(response){
     app.appendChild(container)
     app.appendChild(footer)
 
-    
-    for (let key in response) {
-      if (response.hasOwnProperty(key)) {
-        //console.log(key + " -> " + response[key])
-      }
-    }
 
     if(!firstTime){
       postBtn.innerText = 'Send my awesome answer!'
-      postBtn.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-         event.preventDefault()
-         alert('Enter!')
-         postAnswerBtn()
-        }
-      })
-      postBtn.addEventListener("click", postAnswerBtn)
-      
       container.insertBefore(myInput, getBtn)
     }
-  
-    getBtn.addEventListener("keyup", function(event) {
-      if (event.keyCode === 13) {
-        event.preventDefault()
-        alert('Enter!')
-        getNextQuestionBtn()
-      }
-    })
-    getBtn.addEventListener("click", getNextQuestionBtn)
 
+    // --------------------------------
+    // If new question and the message contains example of how to respond, then show:
     let extraDiv = document.createElement("div")
     extraDiv.setAttribute('id', 'extraDiv')
 
@@ -253,7 +273,6 @@ function setTexts(response){
           
         }
         stringToPlaceInInputfield += temp + " "
-        console.log("")
       }
       // trim the whitespace at the end of the string
       let newStr = stringToPlaceInInputfield.replace(/(^\s+|\s+$)/g,'')
@@ -264,9 +283,13 @@ function setTexts(response){
       numbersDiv.appendChild(numbersNodeH2)
       numbersDiv.appendChild(numbersNodeP)
       extraDiv.appendChild(numbersDiv)
+
+      // --------------------------------
     } 
 
+    // If new question and not first time:
     if(!firstTime){
+      console.log("- If new question and not first time:, kanske all over again?")
       container.appendChild(extraDiv)
       container.removeChild(getBtn)
       container.appendChild(postBtn)
@@ -277,6 +300,7 @@ function setTexts(response){
   // Answer: Right!
   
   } else if(response.result){
+    // Sets result with Uppercase
     let myResult = response.result.charAt(0).toUpperCase() + response.result.slice(1)
     let myMessage = response.message
     
@@ -291,41 +315,26 @@ function setTexts(response){
       container.removeChild(myInput)
       container.removeChild(postBtn)
       container.appendChild(getBtn)
-      getBtn.innerText = 'YES'
-      getBtn.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-          event.preventDefault()
-          alert('Enter!')
-          getNextQuestionBtn()
-        }
-      })
-      getBtn.addEventListener("click", getNextQuestionBtn)
-      
+      getBtn.innerText = 'YES, I want the next question!'
 
   //--------------------------------------
-  // Answer: Congrats! You are all done!
+  // Answer: CONGRATS! You are all done!
 
-      } else if (response.result == "interview complete") {
-        
-        h1.innerText = "CONGRATULATIONS!\n"
-        h2.innerText = myResult
-        p.innerText = "You are a noop!"
-        container.removeChild(extraDiv)
-        container.removeChild(myInput)
-        container.removeChild(postBtn)
-        
-        container.appendChild(getBtn)
+    } else if (response.result == "interview complete") {
 
-        setUrl("/fizzbot")
-        getBtn.innerText = 'Start all over again'
-        getBtn.addEventListener("keyup", function(event) {
-          if (event.keyCode === 13) {
-            event.preventDefault()
-            alert('Enter!')
-            myInit()
-          }
-        })
-        getBtn.addEventListener("click", myInit)
+      let myResult = response.result.charAt(0).toUpperCase() + response.result.slice(1)
+      h1.innerText = myResult
+      h2.innerText = "Grade: " + response.grade
+      p.innerText = response.message
+      container.removeChild(extraDiv)
+      container.removeChild(myInput)
+      container.removeChild(postBtn)
+      
+      container.appendChild(getBtn)
+
+      setUrl("/fizzbot")
+      getBtn.innerText = 'Start me all over again'
+      setEventlistALLOVERagain()
 
   //-------------------------
   // Answer: Wrong...
@@ -339,14 +348,6 @@ function setTexts(response){
       
       container.insertBefore(myInput, postBtn)
       postBtn.innerText = 'Hit me!'
-      postBtn.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-          event.preventDefault()
-          alert('Enter!')
-          postAnswerBtn()
-        }
-      })
-      postBtn.addEventListener("click", postAnswerBtn)
     }
   }
 
@@ -370,7 +371,7 @@ function setUrl(url){
 //--------------------------
 // Starting up everything:
 //--------------------------
-setUrl("/fizzbot")
+
 myInit()
 
 //--------------------------
