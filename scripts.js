@@ -32,25 +32,47 @@ let firstTime = true
 let myHeading = ""
 let myBody = ""
 
+//-----------------------
+// Navigation bar
+function navigationBar(){
+  const ul = document.createElement('ul')
+  const li1 = document.createElement('li')
+  const li2 = document.createElement('li')
+  const link1 = document.createElement('a')
+  const link2 = document.createElement('a')
+
+  ul.setAttribute('class', 'ul')
+  link1.innerText = "FizzBuzz"
+  link1.href = 'index.html'
+  link2.innerText = "About Fizzes"
+  link2.href = 'index.html'
+
+  li1.appendChild(link1)
+  li2.appendChild(link2)
+  ul.appendChild(li2)
+  ul.appendChild(li1)
+  navbar.appendChild(ul)
+}
+
+navigationBar()
+//-----------------------
 
 //-----------------------
 // I AM A WOBOOT"
 function iAmARobot(){
+  const myOwnBotBtnDiv = document.createElement('div')
+  myOwnBotBtnDiv.setAttribute('style', 'padding-top: 4px;')
   const myOwnBotBtn = document.createElement('BUTTON')
   myOwnBotBtn.setAttribute('id', 'myOwnBotBtn')
   myOwnBotBtn.setAttribute('class', 'pinkBtn')
   myOwnBotBtn.innerText = "I\'m a robot!"
-  container.appendChild(myOwnBotBtn)
+  //container.appendChild(myOwnBotBtn)
+  myOwnBotBtnDiv.appendChild(myOwnBotBtn)
+  navbar.appendChild(myOwnBotBtnDiv)
   myOwnBotBtn.addEventListener("click", myRobotFunction)
 }
 
 iAmARobot()
-
-// async function fn() {
-//   return 'hello';
-// }
-// fn().then(console.log)
-// // hello
 
 function myRobotFunction(){
   console.log("I am a wooobooooot!!")
@@ -78,32 +100,6 @@ function myRobotFunction(){
   }
 }
 //-----------------------
-
-//-----------------------
-// Navigation bar
-function navigationBar(){
-  const ul = document.createElement('ul')
-  const li1 = document.createElement('li')
-  const li2 = document.createElement('li')
-  const link1 = document.createElement('a')
-  const link2 = document.createElement('a')
-
-  ul.setAttribute('class', 'ul')
-  link1.innerText = "FizzBuzz"
-  link1.href = 'index.html'
-  link2.innerText = "Om fina Nina"
-  link2.href = 'index.html'
-
-  li1.appendChild(link1)
-  li2.appendChild(link2)
-  ul.appendChild(li2)
-  ul.appendChild(li1)
-  navbar.appendChild(ul)
-}
-
-navigationBar()
-//-----------------------
-
 
 // ---------------------------------
 // Fetching from API

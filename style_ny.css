@@ -77,7 +77,7 @@ p {
 }
 
 .margin-bottom {
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .content-margin {
@@ -153,6 +153,9 @@ header {
   user-select: none;
   background-image: none;
 }
+#myOwnBotBtn{
+  margin-left: 20px;
+}
 .greenBtn{
   background-color: #6fc95e;
 }
@@ -160,7 +163,9 @@ header {
   background-color: #ffcc00;
 }
 .pinkBtn{
-  background-color: #e600ac;
+  background-color: #ff33cc;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 .input{
   width: 80%;
